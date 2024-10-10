@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Vocal Sandbox: Continual Learning and Adaptation for Situated Human-Robot Collaboration</title>
+  <meta name="description" content="Vocal Sandbox - Continual Learning and Adaptation for Situated Human-Robot Collaboration.">
+  <meta name="keywords" content="Vocal Sandbox, Continual Learning for Robotics">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+  <script src="./static/js/index.js"></script>
+
+  <script>hljs.highlightAll();</script>
+</head>
+
+<body>
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">Vocal Sandbox<br><span style="font-size:2.4rem;">Continual Learning & Adaptation for<br>Situated Human-Robot Collaboration</span></h1>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">CoRL Paper ID: 599</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Abstract. -->
+  <section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            We introduce Vocal Sandbox, a framework for enabling seamless human-robot collaboration in situated environments.
+            In our framework, systems are characterized by their ability to adapt and continually learn from rich,
+            mixed-modality interactions: users can not only teach new high-level planning behaviors through spoken dialogue,
+            but they can also provide teaching feedback via modalities such as object keypoints or demonstrations to
+            learn new low-level skills in real-time. To learn from this feedback, we propose new methods for behavior
+            induction and skill learning that support mixed-modality feedback, using pretrained models and lightweight
+            learning algorithms to drive adaptation. Each component is further designed to be interpretable and
+            generates visualization traces for users to build an understanding and co-adapt to a robot's capabilities,
+            localizing teaching feedback to the correct level of abstraction. We evaluate our framework across two
+            settings – gift bag assembly and LEGO stop-motion animation. In the first setting, we run systematic
+            ablations and user studies with 8 non-expert participants, spanning 23 hours of total robot interaction
+            time; users are able to teach 17 new high-level behaviors, spanning an average of 16 new low-level skills,
+            resulting in 22.1% less required supervision relative to non-adaptive baselines. Qualitatively, users
+            strongly prefer our system due to its ease of use (+31.2%), helpfulness (+13.0%), and overall performance
+            (+18.2%). Finally, we scale our framework to a more complex setting with an expert and robot collaborating
+            to film a stop-motion animated movie, where the expert teaches the robot complex dynamic motion skills
+            over a full hour of continued collaboration, shooting a 30-second (138 frame) animation.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  </section>
+  <!--/ Abstract. -->
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0 License</a>,
+            courtesy of <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
