@@ -36,10 +36,22 @@
           <div class="column has-text-centered">
             <h1 class="title is-1 publication-title">Vocal Sandbox<br><span style="font-size:2.4rem;">Continual Learning & Adaptation for<br>Situated Human-Robot Collaboration</span></h1>
             <div class="is-size-5 publication-authors">
-              <span class="author-block">CoRL Paper ID: 599</span>
+              <span class="author-block"><b>Jennifer Grannen*, Siddharth Karamcheti*, Suvir Mirchandani, Percy Liang, Dorsa Sadigh</b></span>
+              <span class="author-block">Stanford University, Stanford, CA</span>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Supplementary Video. -->
+  <section class="hero is-light teaser teaser-video">
+    <div class="container is-max-desktop has-text-centered">
+      <div class="hero-body">
+        <video id="teaser" controls playsinline width="90%">
+          <source src="static/videos/vsandbox-overview.mp4" type="video/mp4">
+        </video>
       </div>
     </div>
   </section>
@@ -52,23 +64,19 @@
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
           <p>
-            We introduce Vocal Sandbox, a framework for enabling seamless human-robot collaboration in situated environments.
-            In our framework, systems are characterized by their ability to adapt and continually learn from rich,
-            mixed-modality interactions: users can not only teach new high-level planning behaviors through spoken dialogue,
-            but they can also provide teaching feedback via modalities such as object keypoints or demonstrations to
-            learn new low-level skills in real-time. To learn from this feedback, we propose new methods for behavior
-            induction and skill learning that support mixed-modality feedback, using pretrained models and lightweight
-            learning algorithms to drive adaptation. Each component is further designed to be interpretable and
-            generates visualization traces for users to build an understanding and co-adapt to a robot's capabilities,
-            localizing teaching feedback to the correct level of abstraction. We evaluate our framework across two
-            settings – gift bag assembly and LEGO stop-motion animation. In the first setting, we run systematic
-            ablations and user studies with 8 non-expert participants, spanning 23 hours of total robot interaction
-            time; users are able to teach 17 new high-level behaviors, spanning an average of 16 new low-level skills,
-            resulting in 22.1% less required supervision relative to non-adaptive baselines. Qualitatively, users
-            strongly prefer our system due to its ease of use (+31.2%), helpfulness (+13.0%), and overall performance
-            (+18.2%). Finally, we scale our framework to a more complex setting with an expert and robot collaborating
-            to film a stop-motion animated movie, where the expert teaches the robot complex dynamic motion skills
-            over a full hour of continued collaboration, shooting a 30-second (138 frame) animation.
+            We introduce Vocal Sandbox, a framework for enabling seamless human-robot collaboration in situated environments. Systems in our framework are 
+            characterized by their ability to <i>adapt and continually learn</i> at multiple levels of abstraction from diverse teaching modalities such as 
+            spoken dialogue, object keypoints, and kinesthetic demonstrations. To enable such adaptation, we design lightweight and interpretable learning 
+            algorithms that allow users to build an understanding and co-adapt to a robot's capabilities in real-time, as they teach new concepts. For example, after 
+            demonstrating a new low-level skill for "tracking around" an object, users are provided with trajectory visualizations of the robot's intended motion 
+            when asked to track a new object. Similarly, users teach high-level planning behaviors through spoken dialogue, using pretrained language models to 
+            synthesize behaviors such as "packing an object away" as compositions of low-level skills - concepts that can be reused and built upon. We evaluate 
+            Vocal Sandbox in two settings: collaborative gift bag assembly and LEGO stop-motion animation. In the first setting, we run systematic ablations and 
+            user studies with 8 non-expert participants, highlighting the impact of multi-level teaching. Across 23 hours of total robot interaction time, users 
+            teach 17 new high-level behaviors with an average of 16 novel low-level skills, requiring 22.1% less active supervision compared to baselines. 
+            Qualitatively, users strongly prefer Vocal Sandbox systems due to their ease of use (+31.2%), helpfulness (+13.0%), and overall performance (+18.2%). 
+            Finally, we pair an experienced system-user with a robot to film a stop-motion animation; over two hours of continuous collaboration, the user teaches 
+            progressively more complex motion skills to produce a 52 second (232 frame) movie.
           </p>
         </div>
       </div>
@@ -76,6 +84,374 @@
   </div>
   </section>
   <!--/ Abstract. -->
+
+  <!-- Vocal Sandbox -- Overview. -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title has-text-centered is-3">Vocal Sandbox – Motivating Example</h2>
+          <div class="content has-text-justified has-text-centered">
+            <img alt="Motivating Example" src="static/images/motivating-example.png" />
+            <p>
+              Vocal Sandbox is a framework for human-robot collaboration that enables robots to <i>adapt and
+              continually learn</i> from situated interactions.
+              In this example, an expert articulates individual LEGO structures for each frame of a
+              <a href="https://en.wikipedia.org/wiki/Stop_motion">stop-motion film</a>,
+              while a robot arm controls the camera. Users <i>teach</i> the robot new high-level behaviors and low-level
+              skills through mixed-modality interactions such as language instructions and demonstrations. The
+              robot learns from this feedback <i>online</i>, scaling to more complex tasks as the collaboration continues.
+            </p>
+            <p>
+              Vocal Sandbox systems consist of <i>two key components:</i> 1) a language model <b>task planner</b> that
+              maps user intents to sequences of high-level behaviors (plans), and 2) a low-level <b>skill policy</b>
+              that maps individual skills output by the language model to real-world robot behavior (i.e., in this example,
+              the skill policy is implemented as a library of
+              <a href="https://arxiv.org/abs/2102.03861">Dynamic Movement Primitives (DMPs)</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!--/ Vocal Sandbox -- Overview. -->
+
+  <!-- Learning & Synthesis with Language Model Task Planners -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title has-text-centered is-3">Learning and Synthesis with Language Model Task Planners</h2>
+          <br/>
+          <div class="content has-text-centered">
+            <img alt="Language Model Interaction Example" width="80%" src="static/images/language-module.png" />
+          </div>
+          <br/>
+          <div class="content has-text-justified has-text-centered">
+            <p>
+              We seed a language model planner with an API specification that defines plans as sequences of functions invoked with different arguments
+              <b>[Left]</b>. Given utterances that successfully map to plans, we visualize an <i>interpretable trace</i> on the GUI. 
+              If an utterance <i>cannot</i> be parsed, we <i>synthesize</i> new functions and arguments by soliciting user feedback.
+            </p>
+          </div>
+
+          <!-- LLM Prompts -->
+          <h3 class="title is-4">LLM Task Planner Prompts</h3>
+          <div class="content has-text-justified has-text-centered">
+            <p>
+              In the following code blocks, we provide the actual GPT-3.5 Turbo (v11-06) prompts that we use for
+              generation and teaching for our gift-bag assembly setting:
+            </p>
+            <h5 class="title is-5">Base LLM System Prompt with In-Context Examples</h5>
+<pre><code class="language-python"># Utility Function for "Python-izing" Objects as Literal Types
+def pythonize_types(types: Dict[str, List[Dict[str, str]]]) -> str:
+  py_str = "# Python Enums defining the various known objects in the scene\n\n"
+
+  # Create Enums for each Type Class
+  py_str += "# Enums for Various Object Types\n"
+  for type_cls, element_list in types.items():
+      py_str += f"class {type_cls}(Enum):\n"
+      for element in element_list:
+          py_str += f"    {element['name']} = auto()  # {element['docstring']}\n"
+      py_str += "\n"
+
+  return py_str.strip()
+
+# Initial "Seed" Objects in the Environment
+TYPE_DEFINITIONS = {
+  "object": [
+      {"name": "CANDY", "docstring": "A gummy, sandwich-shaped candy."},
+      {"name": "GIFT_BAG", "docstring": "A gift bag that can hold items."},
+  ]
+}
+
+# Base System Prompt -- with "Python-ized" Types
+BASE_SYSTEM_PROMPT = (
+  "You are a reliable code interface that will be representing a robot arm in a collaborative interaction "
+  "with a user.\n\n"
+
+  "In today's session, the user and robot arm will be working together to wrap gifts. "
+  "On the table are various gift-wrapping related objects.\n\n"
+
+  "You will have access to a Python API defining some objects and high-level functions for "
+  "controlling the robot. \n\n"
+
+  "```python\n"
+  f"{pythonize_types(TYPE_DEFINITIONS)}\n"
+  "```\n\n"
+
+  "Given a spoken utterance from the user your job is to identify the correct sequence of function calls and "
+  "arguments from the API, returning the appropriate API call in JSON. Note that the speech-to-text engine is not"
+  "perfect! Do your best to handle ambiguities, for example:"
+  "\t- 'Put the carrots in the back' --> 'Put the carrots in the bag' (hard 'g')"
+  "\t- 'Throw the popcorn in the in' --> 'Throw the popcorn in the bin' (soft 'b')\n\n"
+
+  "If an object is not in the API, you should not fail. Instead, return an new object, which will be added to the API in the future. "
+  "Even if you are not sure, respond as best you can to user inputs. "
+)
+
+# In-Context Examples
+ICL_EXAMPLES = [
+  {"role" : "system", "content": BASE_SYSTEM_PROMPT},
+  make_example("release", "release", "{}", "1"),
+  make_example("grasp", "grasp", "{}", "2"),
+  make_example("go home", "go_home", "{}", "3"),
+  make_example("go to the bag", "goto", "{'object': 'GIFT_BAG'}", "5"),
+  make_example("go away!", "go_home", "{}", "6"),
+  make_example("grab the gummy", "pickup", "{'object': 'CANDY'}", "7"),
+]</code></pre>
+            <p>
+              Note that the System Prompt explicitly encodes the arguments/literals defined in the API; these are
+              continually updated as new literals are defined by the user (e.g., <code>`TOY_CAR`</code>) following the
+              example above. The System Prompt also specifically encodes handling for common speech-to-text errors.
+            </p>
+            <p>
+              We pair this System Prompt with the actual "functions" (behaviors/skills) in the API specification. These
+              are encoded via  <a href="https://platform.openai.com/docs/guides/function-calling">OpenAI's Function
+              Calling Format</a>, and are similarly updated continuously.
+            </p>
+            <h5 class="title is-5">Function Calling Tool Specification</h5>
+<pre><code class="language-python"># Initial Seed "Functions" (Primitives)
+FUNCTIONS = [
+  {
+      "type": "function",
+      "function": {
+          "name": "go_home",
+          "description": "Return to a neutral home position (compliant)."
+      }
+  },
+  {
+      "type": "function",
+      "function": {
+          "name": "goto",
+          "description": "Move directly to the specified `Object` (compliant).",
+          "parameters": {
+              "type": "object",
+              "properties": {
+                  "object": {
+                      "type": "string",
+                      "description": "An object in the scene (e.g., RIGHT_HAND)."
+                  },
+              },
+              "required": ["object"],
+          }
+      }
+  },
+  {
+      "type": "function",
+      "function": {
+          "name": "grasp",
+          "description": "Close the gripper at the current position, potentially grasping an object (non-compliant)."
+      }
+  },
+  {
+      "type": "function",
+      "function": {
+          "name": "release",
+          "description": "Release the currently held object (if any) by fully opening the gripper (compliant)."
+      }
+  },
+  {
+      "type": "function",
+      "function": {
+          "name": "pickup",
+          "description": "Go to and pick up the specified object (non-compliant).",
+          "parameters": {
+              "type": "object",
+              "properties": {
+                  "object": {
+                      "type": "string",
+                      "description": "An object in the scene (e.g., SCISSORS)."
+                  }
+              },
+              "required": ["object"]
+          }
+      }
+  },
+]</code></pre>
+            <p>
+              Given the above, we can generate a plan (sequence of tool calls with the appropriate arguments) given a
+              new user instruction as follows:
+            </p>
+<pre><code># OpenAI Chat Completion Invocation - All Responses are added to "ICL_EXAMPLES" as running memory
+openai_client = OpenAI(api_key=openai_api_key, organization=organization_id)
+llm_response = openai_client.chat.completions.create(
+    model="gpt-3.5-turbo-1106",
+    messages=[*ICL_EXAMPLES, {"role": "user", "content": "{USER_UTTERANCE}"}],
+    temperature=0.2,
+    tools=FUNCTIONS,
+    tool_choice="auto",
+)</code></pre>
+            <p>
+              Finally, a key component of our framework is the ability to <b>teach</b> new high-level behaviors; to do
+              this, we define a special <code>`TEACH()`</code> function that automatically generates the new
+              specification (name, docstring, type signature). We call this explicitly when the user indicates they
+              want to "teach" a new behavior.
+            </p>
+            <h5 class="title is-5">Teach Function Specification</h5>
+<pre><code>TEACH_FUNCTION = [
+  {
+      "type": "function",
+      "function": {
+          "name": "teach_function",
+          "description": "Signal the user that the behavior or skill they mentioned is not represented in the set of known functions, and needs to be explicitly taught.",
+          "parameters": {
+              "type": "object",
+              "properties": {
+                  "new_function_name": {
+                      "type": "string",
+                      "description": "Informative Python function name for the new behavior/skill that the user needs "
+                                     "to add (e.g., `bring_to_user`)."
+                  },
+                  "new_function_signature": {
+                      "type": "string",
+                      "description": "List of arguments from the command for the new function (e.g., '[SCISSORS, RIBBON]' or '[]').'"
+                  },
+                  "new_function_description": {
+                      "type": "string",
+                      "description": "Short description to populate docstring for the new function (e.g., 'Pickup the specified object and bring it to the user (compliant)).'"
+                  },
+              },
+              "required": ["new_function_name", "new_function_signature", "new_function_description"]
+          }
+      }
+  }
+]
+
+# Invoking the Teach Function
+teach_response = openai_client.chat.completions.create(
+    model="gpt-3.5-turbo-1106",
+    messages=[*ICL_EXAMPLES, {"role": "user", "content": "{TEACHING_TRACE}"}],
+    temperature=0.2,
+    tools=TEACH_FUNCTION,
+    tool_choice={"type": "function", "function": {"name": "teach_function"}}, # Force invocation
+)</code></pre>
+            <p>
+              The synthesized function is then added to <code>`FUNCTIONS`</code> immediately, so that it can be used
+              as soon as the user provides their next utterance.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+    <!--/ Learning & Synthesis with Language Model Task Planners -->
+
+  <!-- Gift Bag Assembly -- Quantitative Results. -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title has-text-centered is-3">User Study Quantitative Results</h2>
+          <div class="content has-text-justified has-text-centered">
+            <img alt="Quantitative Results" src="static/images/results.png" />
+            <br/><br/>
+            <p>
+              We summarize the quantitative results from our user study (N = 8) above. We report robot supervision time
+              <b>[Left]</b>, behavior complexity (depth of new functions defined) <b>[Middle]</b> and skill failures
+              <b>[Right]</b>. Over time, users working with Vocal Sandbox systems teach more complex high-level behaviors,
+              see fewer skill failures, and need to supervise the robot for shorter periods of time compared to baselines.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!--/ Gift Bag Assembly -- Quantitative Results. -->
+
+  <!-- Gift Bag Assembly -- User Study Videos. -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+            <h2 class="title has-text-centered is-3">User Study Rollout Videos</h2>
+            <div class="content has-text-justified has-text-centered">
+                <p>
+                  We additionally provide illustrative videos showing various users working with our proposed Vocal
+                  Sandbox system from our user study.
+                </p>
+                <div class="columns is-vcentered interpolation-panel">
+                    <div class="column has-text-centered">
+                         <h5>User A – Bag 3</h5>
+                        <video id="userA" controls playsinline width="90%">
+                            <source src="static/videos/userA-bag-3.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="column has-text-centered">
+                         <h5>User B – Bag 4</h5>
+                        <video id="userB" controls playsinline width="90%">
+                            <source src="static/videos/userB-bag-4.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+                <div class="columns is-vcentered interpolation-panel">
+                    <div class="column has-text-centered">
+                         <h5>User C – Bag 3</h5>
+                        <video id="userC" controls playsinline width="90%">
+                            <source src="static/videos/userC-bag-3.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="column has-text-centered">
+                         <h5>User D – Bag 3</h5>
+                        <video id="userD" controls playsinline width="90%">
+                            <source src="static/videos/userD-bag-3.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+                <div class="columns is-vcentered interpolation-panel">
+                    <div class="column has-text-centered">
+                         <h5>User E – Bag 4</h5>
+                        <video id="userE" controls playsinline width="90%">
+                            <source src="static/videos/userE-bag-4.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="column has-text-centered">
+                         <h5>User F – Bag 3</h5>
+                        <video id="userF" controls playsinline width="90%">
+                            <source src="static/videos/userF-bag-3.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+                <p>
+                  These sections only provide complementary details for the full implementation of the Vocal Sandbox
+                  framework, and only briefly summarize the results from our two experimental settings. Please consult our
+                  paper for the complete details!
+                </p>
+            </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!--/ Gift Bag Assembly -- User Study Videos. -->
+
+  <!-- Supplementary Video. -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+            <h2 class="title has-text-centered is-3">Lego Stop-Motion Timelapse & Final Film</h2>
+            <div class="content has-text-justified has-text-centered">
+                <p>
+                  We additionally provide illustrative videos showing a timelapse of the two hour long continuous collaboration
+                  episode for our stop-motion animation application, along with the final minute-long movie.
+                </p>
+                <div class="columns is-vcentered interpolation-panel">
+                    <div class="column has-text-centered">
+                        <video id="timelapse" controls playsinline width="90%">
+                            <source src="static/videos/stop-motion-timelapse.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="column has-text-centered">
+                        <video id="userB" controls playsinline width="90%">
+                            <source src="static/videos/lego-movie.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
 <footer class="footer">
   <div class="container">
